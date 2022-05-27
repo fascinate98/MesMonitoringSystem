@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="condition">
+   <select id="readCondition" resultType="isabnormalvo">
+      <![CDATA[
+         SELECT isAbnormal_id, isAbnormal_press_id, isAbnormal_regDate, isAbnormal_status FROM isAbnormal
+         order by isAbnormal_id desc , isAbnormal_press_id asc      ]]>
+   </select>
+   
+   <insert id="insertCondition" parameterType="isabnormalvo" >
+      <![CDATA[
+         
+         insert
+           into isAbnormal
+         values (null, #{isAbnormalPressId}, now(), #{isAbnormalStatus})
+          
+        ]]>
+           
+   </insert>
+</mapper>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+	</settings>
+	<typeAliases>
+		
+		<typeAlias type="com.example.demo.vo.JoborderVo" alias="jobordervo" />
+		<typeAlias type="com.example.demo.vo.JoborderResultVo" alias="joborderresultvo" />
+		<typeAlias type="com.example.demo.vo.UserVo" alias="uservo" />		
+		<typeAlias type="com.example.demo.vo.SlitterVo" alias="slittervo" />
+		<typeAlias type="com.example.demo.vo.ArduinoVo" alias="arduinovo" />
+		
+		
+	</typeAliases>
+	<mappers>
+		<mapper resource="mybatis/mappers/user.xml" />
+		<mapper resource="mybatis/mappers/plan.xml" />
+		<mapper resource="mybatis/mappers/performance.xml" />
+		<mapper resource="mybatis/mappers/arduino.xml" />
+		
+	</mappers>
+</configuration>

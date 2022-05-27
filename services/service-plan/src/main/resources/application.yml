@@ -1,0 +1,37 @@
+spring:
+   application:
+      name: service-plan
+   profiles:
+      active: development
+
+
+---
+#
+# development configuration
+#
+spring:
+   config:
+      activate:
+         on-profile: development
+      import: optional:configserver:http://localhost:7778
+
+   cloud:
+      gcp:
+         storage:
+            credentials:
+               location: classpath:intense-base-343805-e906bfa762d9.json
+
+---
+#
+# production configuration
+#
+spring:
+   config:
+      activate:
+         on-profile: production
+      import: optional:configserver:http://34.64.240.101:7778
+   cloud:
+      gcp:
+         storage:
+            credentials:
+               location: classpath:intense-base-343805-e906bfa762d9.json

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="plan">
+
+   <select id="findPlan" resultType="jobordervo" parameterType="string">
+      <choose>
+         <when test="keyword == null or keyword == ''">
+            <![CDATA[   
+              select       j.joborder_id as 'joborderId',
+                      j.joborder_material_id as 'joborderMaterialId',
+                      j.joborder_writer as 'joborderWriter',
+                      j.joborder_slitter_no as 'joborderSlitterNo',
+                      j.joborder_warehouse_id as 'joborderWarehouseId',
+                      j.joborder_jobname as 'joborderJobname',
+                      j.joborder_weight as 'joborderWeight', 
+                      j.joborder_width as 'joborderWidth', 
+                      j.joborder_status as 'joborderStatus',
+                      j.joborder_line as 'joborderLine', 
+                      j.joborder_reg_date as 'joborderRegDate',
+                      j.joborder_end_date as 'joborderEndDate',
+                      j.joborde_est_time as 'joborderEstTime',
+                      j.joborder_workplace as 'joborderWorkplace',
+                      j.joborder_customer as 'joborderCustomer',
+                      j.joborder_worker_num as 'joborderWorkerNum',
+                      j.joborder_emg as 'joborderEmg',
+                      j.joborder_qr as 'joborderQr',
+                      u1.user_name as 'joborderWorkerName',
+                     s.slitter_name as 'slitterName', 
+                     
+                     m.material_width as 'materialWidth',
+                      m.material_lotno as 'materialLotno',
+                      m.material_prod_name as 'materialProdName'  
+                     
+                      
+                   from joborder  as j  
+                         LEFT JOIN user as u
+                        ON j.joborder_writer = u.user_id
+                       LEFT JOIN material as m
+                        ON j.joborder_material_id = m.material_id
+                     LEFT JOIN slitter as s
+                        ON j.joborder_slitter_no = s.slitter_id
+                     LEFT JOIN warehouse as w
+                        ON j.joborder_warehouse_id = w.warehouse_id
+					LEFT OUTER JOIN joborder_result as r
+                        ON j.joborder_id = r.joborder_result_joborder_id
+				    LEFT OUTER JOIN user as u1
+                         ON r.joborder_result_worker_id= u1.user_id
+                           order by joborder_id desc
+              ]]>   
+         </when>
+         <otherwise>
+            <![CDATA[
+                select no, first_name, last_name, email
+                    from emaillist
+                  where first_name like '%${keyword}%'
+                    or last_name like '%${keyword}%'
+                    or email like '%${keyword}%' 
+                order by no desc
+              ]]>   
+         </otherwise>
+      </choose>   
+   </select>
+   
+	<select id="getSlitter" resultType="slittervo">
+            <![CDATA[   
+             select * from slitter
+              ]]>   
+   </select>
+   
+
+   <select id="conPerformance" resultType="jobordervo" parameterType="string">
+         <![CDATA[   
+             select j.joborder_id as 'joborderId',
+                      j.joborder_material_id as 'joborderMaterialId',
+                      j.joborder_writer as 'joborderWriter',
+                      j.joborder_slitter_no as 'joborderSlitterNo',
+                      j.joborder_warehouse_id as 'joborderWarehouseId',
+                      j.joborder_jobname as 'joborderJobname',
+                      j.joborder_weight as 'joborderWeight', 
+                      j.joborder_width as 'joborderWidth', 
+                      j.joborder_ordernum as 'joborderOrdernum' , 
+                      j.joborder_line as 'joborderLine', 
+                      j.joborder_reg_date as 'joborderRegDate',
+                      j.joborder_end_date as 'joborderEndDate',
+                      j.joborde_est_time as 'joborderEstTime',
+                      j.joborder_workplace as 'joborderWorkplace',
+                      j.joborder_customer as 'joborderCustomer',
+                      j.joborder_worker_num as 'joborderWorkerNum',
+                      j.joborder_emg as 'joborderEmg',
+                      j.joborder_status as 'joborderStatus',
+                      j.joborder_qr as 'joborderQr',
+                      u
+                      
+                         
+                     s.slitter_name as 'slitterName', 
+                     m.material_lotno as 'materialLotno', 
+                     m.material_width as 'materialWidth', 
+                     j.joborder_line as 'joborderLine', 
+                     w.warehouse_name as 'warehouseName'
+                     
+                   from joborder  as j  
+                         LEFT JOIN user as u
+                        ON j.joborder_writer = u.user_id
+                       LEFT JOIN material as m
+                        ON j.joborder_material_id = m.material_id
+                     LEFT JOIN slitter as s
+                        ON j.joborder_slitter_no = s.slitter_id
+                     LEFT JOIN warehouse as w
+                        ON j.joborder_warehouse_id = w.warehouse_id
+                        LEFT JOIN user as u1
+                  ON r.joborder_result_worker_id= u1.user_id
+                            where joborder_jobname = #{joborderJobname}
+              ]]>   
+     </select>
+   
+   
+   
+   <insert id="insertPlan" parameterType="jobordervo" useGeneratedKeys="true" keyProperty="joborderQr" >
+      <![CDATA[
+         
+         insert
+           into joborder
+         values (    null , 
+                  #{joborderMaterialId}, 
+                  0, 
+                  #{joborderSlitterNo} ,
+                  #{joborderWarehouseId},
+                  concat('C1040','_',#{joborderSlitterNo},'_',date_format(now(6), '%f')),
+                  #{joborderWeight} ,
+                  #{joborderWidth}, 
+                  
+                  null, 
+                  now() , 
+                  #{joborderEndDate}, 
+                  #{joborderEstTime}, 
+                  #{joborderWorkplace},
+                  #{joborderCustomer} , 
+                  #{joborderWorkerNum} , 
+                  #{joborderEmg} , 
+                  0,
+                  concat('http://localhost:8080/api/performance/C1040','_',#{joborderSlitterNo},'_',date_format(now(6), '%f')),
+                  null                   )
+         
+        ]]>
+           
+   </insert>
+   
+   <update id="updateLine" parameterType="jobordervo">
+         <![CDATA[
+            
+            update joborder 
+            inner join material 
+            set joborder_line =   
+              ceil(material.material_width / joborder_width)
+            where material.material_id = joborder.joborder_material_id 
+            and joborder_id=#{joborderId};
+           ]]>
+   </update>
+   
+   <insert id = "insertTest" parameterType="jobordervo">
+      <![CDATA[
+         insert 
+            into joborder 
+         values ( null , 1, 2, 3, 4, 5, 6, 7, 8,9 , now(), now(),
+          12, 13, 14, 15 , 16 , 17 );
+         
+        ]]>
+       <selectKey keyProperty="joborderId" resultType="int" order="AFTER">
+         <![CDATA[
+           select last_insert_id()
+           ]]>
+        </selectKey>
+      
+   </insert>
+   
+   <select id="makeQR" resultType="string">
+      <![CDATA[ SELECT joborder_qr FROM joborder ORDER BY joborder_id DESC LIMIT 1; ]]>   
+
+   </select>
+   
+   <select id="findId" resultType="int" parameterType="jobordervo">
+      <![CDATA[ SELECT joborder_id FROM joborder ORDER BY joborder_id DESC LIMIT 1; ]]>   
+
+   </select>
+</mapper>

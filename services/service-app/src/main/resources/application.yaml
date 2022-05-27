@@ -1,0 +1,93 @@
+#
+# common configuration
+#
+
+spring:
+   application:
+      name: service-plan
+   profiles:
+      active: development
+
+mybatis:
+   config-location: classpath:mybatis/configuration.xml
+
+
+---
+#
+# development configuration
+#
+spring:
+   config:
+      activate:
+         on-profile: development
+
+   devtools:
+      livereload:
+         enabled: true
+   datasource:
+      driver-class-name: org.mariadb.jdbc.Driver
+      url: jdbc:mysql://34.64.148.106:3307/return0?characterEncoding=utf8?allowMultiQueries=true
+      username: return0
+      password: 1234
+      
+server:
+   port: 8999
+   servlet:
+      context-path: /
+      encoding:
+         charset: UTF-8
+         enabled: true
+
+logging:
+   pattern:
+      console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n"
+   level:
+      root: INFO
+
+mybatis:
+   config-location: classpath:mybatis/configuration.xml
+
+---
+#
+# production configuration
+#
+spring:
+   config:
+      activate:
+         on-profile: production
+
+   datasource:
+      driver-class-name: org.mariadb.jdbc.Driver
+      url: jdbc:mysql://34.64.148.106:3307/return0?characterEncoding=utf8
+      username: return0
+      password: 1234
+               
+server:
+   port: 8999
+   servlet:
+      context-path: /
+      encoding:
+         charset: UTF-8
+         enabled: true
+         
+logging:
+   pattern:
+      file: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n"
+   logback:
+      rollingpolicy:
+         file-name-pattern: "logs/${spring.application.name}.%d{yyyy-MM-dd}.%i.log.zip"
+   file:
+      name: logs/${spring.application.name}.log
+      max-history: 30
+   level:
+      root: INFO
+      com:
+         example:
+            demo:
+               exception: ERROR
+mybatis:
+   config-location: classpath:mybatis/configuration.xml          
+         
+         
+         
+         

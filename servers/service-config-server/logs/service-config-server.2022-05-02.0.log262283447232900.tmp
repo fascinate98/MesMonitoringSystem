@@ -1,0 +1,15 @@
+15:43:14.255 [main] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'; nested exception is org.springframework.boot.web.server.PortInUseException: Port 7778 is already in use
+15:43:14.290 [main] ERROR o.s.b.d.LoggingFailureAnalysisReporter - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 7778 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 7778 or configure this application to listen on another port.
+

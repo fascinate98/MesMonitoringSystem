@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+	</settings>
+	<typeAliases>
+		<typeAlias type="java.lang.String" alias="string"/>
+		<typeAlias type="java.util.HashMap" alias="hashmap"/>
+		
+		<typeAlias type="com.example.demo.vo.UserVo" alias="uservo" />
+		<typeAlias type="com.example.demo.vo.JoborderVo" alias="jobordervo" />
+		<typeAlias type="com.example.demo.vo.JoborderResultVo" alias="joborderresultvo" />
+		<typeAlias type="com.example.demo.vo.MaterialVo" alias="materialvo" />
+		
+		<typeAlias type="com.example.demo.vo.PressVo" alias="pressvo" />
+		<typeAlias type="com.example.demo.vo.SlitterVo" alias="slittervo" />
+		<typeAlias type="com.example.demo.vo.UserVo" alias="uservo" />
+		<typeAlias type="com.example.demo.vo.WarehouseVo" alias="warehousevo" />
+		
+	</typeAliases>
+	<mappers>
+		<mapper resource="mybatis/mappers/user.xml" />
+		<mapper resource="mybatis/mappers/press.xml" />
+		<mapper resource="mybatis/mappers/plan.xml" />
+		<mapper resource="mybatis/mappers/tag.xml" />
+		<mapper resource="mybatis/mappers/performance.xml" />
+		<mapper resource="mybatis/mappers/dashboard.xml" />
+	</mappers>
+</configuration>

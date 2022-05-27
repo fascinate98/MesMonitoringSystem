@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tag">
+
+   <select id="findTag" resultType="pressvo"
+      parameterType="hashmap">
+      <![CDATA[
+         SELECT log.press_log_press_id, log.press_log_status, log.press_log_punch
+         FROM press_log as log
+         WHERE 
+         (
+      ]]>
+      <foreach collection="seletItem" item="item" separator=" OR ">
+         log.press_log_press_id = #{item.value}
+      </foreach>
+      <![CDATA[         
+         )
+         AND 
+         log.press_log_time >= DATE_ADD('2022-03-07 00:00:00', INTERVAL 0  SECOND)
+         AND 
+         log.press_log_time < DATE_ADD('2022-03-07 00:00:00' , INTERVAL 10  SECOND);
+                 
+      ]]>
+   </select>
+   <select id="findTagTime" resultType="pressvo"
+      parameterType="hashmap">
+      select press_log_id, press_log_press_id, press_log_status,
+      press_log_punch
+      from press_log
+      where
+      <foreach collection="list" item="item" separator=" OR ">
+         press_log_id = #{item}
+      </foreach>
+
+   </select>
+
+   <select id="findHistory" resultType="map"
+      parameterType="hashmap">
+      <foreach collection="id" item="item" separator=" union ">
+         select
+         press_log_id,
+         press_log_press_id as id,
+         press_log_status as status,
+         press_log_punch as punch
+         from press_log
+         where (
+            <foreach collection="time" item="t" separator=" or ">
+               press_log_id = ${t} + (604800 * (${item}-1))
+            </foreach>
+         )
+
+      </foreach>
+   </select>
+</mapper>
+   

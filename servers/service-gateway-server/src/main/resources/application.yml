@@ -1,0 +1,115 @@
+spring:
+   application:
+     name: service-gateway-server
+   profiles:
+     active: development
+   cloud:
+      gateway:
+         routes:
+            - id: service-plan
+              uri: lb://SERVICE-PLAN    
+              predicates:
+                 - Path=/api/plan/**, /api/registration/**, /api/qr/**
+              filters:
+                 - RewritePath=/api/plan/(?<path>.*), /$\{path},                  
+                               /api/registration/(?<path>.*), /$\{path}, 
+                               /api/qr/(?<path>.*), /$\{path}, 
+            - id: service-performance
+              uri: lb://SERVICE-PERFORMANCE
+              predicates:
+                 - Path=/api/performance/**
+              filters:
+                 - RewritePath=/api/performance/(?<path>.*), /$\{path},
+                               /api/performance/{joborderJobname}/(?<path>.*), /$\{path},   
+                 
+            - id: service-dashboard
+              uri: lb://SERVICE-DASHBOARD
+              predicates:
+                 - Path=/api/dashboard/**
+              filters:
+                 - RewritePath=/api/dashboard/(?<path>.*), /$\{path}
+                 
+                 
+            - id: service-monitoring
+              uri: lb://SERVICE-MONITORING
+              predicates:
+                 - Path=/api/monitoring/**
+              filters:
+                 - RewritePath=/api/monitoring/(?<path>.*), /$\{path}               
+                 
+            - id: service-condition
+              uri: lb://SERVICE-CONDITION
+              predicates:
+                 - Path=/api/condition/**
+              filters:
+                 - RewritePath=/api/condition/(?<path>.*), /$\{path}
+                 
+                 
+            - id: service-tag
+              uri: lb://SERVICE-TAG
+              predicates:
+                 - Path=/api/Tag/**, /api/history/**
+              filters:
+                 - RewritePath=/api/Tag/(?<path>.*), /$\{path} ,
+                               /api/history/(?<path>.*), /$\{path}
+                               
+                                
+            - id: service-arduino
+              uri: lb://SERVICE-ARDUINO
+              predicates:
+                 - Path=/api/arduino/**
+              filters:
+                 - RewritePath=/api/arduino/(?<path>.*), /$\{path}
+server:
+  port: 5556
+---
+#
+# development configuration
+#
+spring:
+   config:
+      activate:
+         on-profile: development
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: false
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8762/eureka/
+    
+logging:
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n"
+  level:
+    root: INFO
+
+---
+#
+# production configuration
+#
+spring:
+   config:
+      activate:
+         on-profile: production
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: false
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://34.64.240.101:8762/eureka/
+
+logging:
+  pattern:
+    file: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n"
+  logback:
+    rollingpolicy:
+      file-name-pattern: "logs/${spring.application.name}.%d{yyyy-MM-dd}.%i.log.zip"
+      max-history: 30
+  file:
+    name: logs/${spring.application.name}.log
+  level:
+    root: WARN

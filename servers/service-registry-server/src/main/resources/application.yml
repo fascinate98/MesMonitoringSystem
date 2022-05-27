@@ -1,0 +1,67 @@
+spring:
+   application:
+      name: service-registry-server
+   profiles:
+      active: development    
+server:
+   port: 8762
+
+   
+---
+#
+# development configuration
+#
+spring:
+   config:
+      activate:
+         on-profile: development   
+eureka:
+   instance:
+      hostname: localhost
+   server:
+      enableSelfPreservation: false
+      waitTimeInMsWhenSyncEmpty: 5        
+   client:
+      fetchRegistry: false
+      registerWithEureka: false
+      serviceUrl:
+         defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka
+logging:
+   pattern:
+      console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n"
+   level:
+      root: INFO
+
+      
+---
+#
+# production configuration
+#
+spring:
+   config:
+      activate:
+         on-profile: production   
+eureka:
+   instance:
+      hostname: 34.64.240.101
+   server:
+      enableSelfPreservation: false
+      waitTimeInMsWhenSyncEmpty: 5 
+   client:
+      fetchRegistry: false
+      registerWithEureka: false
+      serviceUrl:
+         defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka
+logging:
+   pattern:
+      file: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n"
+   logback:
+      rollingpolicy:
+         file-name-pattern: "logs/${spring.application.name}.%d{yyyy-MM-dd}.%i.log.zip"
+         max-file-size: 10MB
+         max-history: 10
+   file:
+      name: logs/${spring.application.name}.log
+   level:
+      root: WARN
+         

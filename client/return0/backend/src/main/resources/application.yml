@@ -1,0 +1,102 @@
+spring:
+   application:
+     name: return0
+   profiles:
+      active: development
+   mvc:
+      static-path-pattern: /assets/**
+      throw-exception-if-no-handler-found: true
+   web:   
+      resources:
+         static-locations: classpath:/assets/   
+   thymeleaf:
+      prefix: classpath:templates/
+      check-template-location: true
+      mode: HTML
+      suffix: .html
+      cache: false
+   servlet:
+      multipart:
+         enabled: true
+         max-file-size: 20MB
+         max-request-size: 100MB
+mybatis:
+   config-location: classpath:mybatis/configuration.xml
+
+---
+#
+# development configuration
+#
+spring:
+   config:
+      activate:
+         on-profile: development
+   devtools:
+      livereload:
+         enabled: true
+         
+   datasource:
+      driver-class-name: org.mariadb.jdbc.Driver
+      url: jdbc:mysql://34.64.148.106:3307/return0?characterEncoding=utf8?allowMultiQueries=true
+      username: return0
+      password: 1234
+      
+server:
+   port: 8988
+   servlet:
+      context-path: /
+      encoding:
+         charset: UTF-8
+         enabled: true
+gateway:
+   name: 
+   endpoint: http://localhost:5556
+logging:
+   pattern:
+      console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n"
+   level:
+      root: INFO
+
+
+---
+#
+# production profile configuration
+#
+spring:
+   config:
+      activate:
+         on-profile: production           
+         
+   datasource:
+      driver-class-name: org.mariadb.jdbc.Driver
+      url: jdbc:mysql://34.64.148.106:3307/return0?characterEncoding=utf8?allowMultiQueries=true
+      username: return0
+      password: 1234
+         
+server:
+   port: 8989
+   servlet:
+      context-path: /
+      encoding:
+         charset: UTF-8
+         enabled: true
+
+gateway:
+   name: 
+   endpoint: http://34.64.240.101:5556  
+logging:
+   pattern:
+      file: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n"
+   logback:
+      rollingpolicy:
+         file-name-pattern: "logs/${spring.application.name}.%d{yyyy-MM-dd}.%i.log.zip"
+         max-file-size: 10MB
+         max-history: 10
+   file:
+      name: logs/${spring.application.name}.log
+   level:
+      root: WARN
+      com:
+         example:
+            demo:
+               exception: ERROR

@@ -1,0 +1,20 @@
+# JavaScript Project
+**/node_modules
+
+# IDE(VSCode, Eclipse, Intellij)
+**/.vscode
+**/.sln
+**/.sw?
+
+**/.classpath
+**/.project
+**/.settings
+**/target
+
+**/.idea
+**/.iml
+
+**/build
+
+# for mac
+**/DS_Store

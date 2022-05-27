@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="performance">
+
+	<select id="readPerformance" resultType="joborderresultvo"
+		parameterType="string">
+		<choose>
+			<when test="keyword == null or keyword == ''">
+            <![CDATA[   
+             select 
+                r.joborder_result_id as 'joborderResultId', 
+                r.joborder_result_joborder_id as 'joborderResultJoborderId',
+                r.joborder_result_worker_id as 'joborderResultWorkerId', 
+                r.joborder_result_start_time as 'joborderResultStartTime', 
+                r.joborder_result_finish_time as 'joborderResultFinishTime',
+                TIMESTAMPDIFF(MINUTE, r.joborder_result_start_time , r.joborder_result_finish_time ) as
+                'joborderResultTime' , 
+                r.joborder_result_weight as 'joborderResultWeight',
+                m.material_lotno as 'materialLotno',  
+                s.slitter_name as 'joborderSlitterName',
+               j.joborder_width as 'joborderWidth', 
+               u1.user_name as 'userName', 
+               j.joborder_weight as 'joborderWeight',
+                  (j.joborder_weight - r.joborder_result_weight ) as 'weightDifference' ,
+                    w.warehouse_name as 'warehouseName', 
+                    m.material_prod_name as 'materialProdName'
+                    
+               from joborder_result  as r 
+                 LEFT JOIN joborder as j
+                  ON r.joborder_result_joborder_id = j.joborder_id
+               LEFT JOIN user as u
+                  ON j.joborder_writer = u.user_id
+               LEFT JOIN material as m
+                  ON j.joborder_material_id = m.material_id
+               LEFT JOIN slitter as s
+                  ON j.joborder_slitter_no = s.slitter_id
+               LEFT JOIN warehouse as w
+                  ON j.joborder_warehouse_id = w.warehouse_id
+			LEFT JOIN user as u1
+                  ON r.joborder_result_worker_id= u1.user_id
+                  
+                  order by r.joborder_result_joborder_id desc;
+
+              ]]>
+			</when>
+			<otherwise>
+            <![CDATA[
+                select no, first_name, last_name, email
+                    from emaillist
+                  where first_name like '%${keyword}%'
+                    or last_name like '%${keyword}%'
+                    or email like '%${keyword}%' 
+                order by no desc
+              ]]>
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insertPerformance" parameterType="joborderresultvo">
+		<![CDATA[
+			
+			insert 
+				into joborder_result
+			values ( null , 
+					 #{joborderResultJoborderId}, 
+					 #{joborderResultWorkerId} , 
+					 now() , 
+					 null,  
+					 null , 
+					 null )
+			
+	  	]]>
+		<selectKey keyProperty="joborderResultId" resultType="int"
+			order="AFTER">
+			<![CDATA[
+		  	select last_insert_id()
+	  		]]>
+		</selectKey>
+	</insert>
+	
+	<update id="updateStatus1" parameterType="joborderresultvo">
+			<![CDATA[
+				
+				update  
+					joborder 
+				SET joborder_status = 1
+					where joborder_id = #{joborderResultJoborderId}
+		  	]]>
+	</update>
+	
+	<update id="updateStatus2" parameterType="joborderresultvo">
+			<![CDATA[
+				
+				update  
+					joborder 
+				SET joborder_status = 2
+					where joborder_id = #{joborderResultJoborderId}
+		  	]]>
+	</update>
+
+	<update id="updateSlitter" parameterType="joborderresultvo">
+			<![CDATA[
+				
+				update  
+					joborder 
+				SET joborder_slitter_no = #{joborderSlitterNo}
+	    
+					where joborder_id = #{joborderResultJoborderId}
+		  	]]>
+
+		<selectKey keyProperty="joborderResultId" resultType="int"
+			order="AFTER">
+			<![CDATA[
+		  	select last_insert_id()
+	  		]]>
+		</selectKey>
+	</update>
+
+	<update id="updatePerformance" parameterType="joborderresultvo">
+         <![CDATA[
+            
+            update  
+               joborder_result 
+            SET joborder_result_finish_time = now(),
+               joborder_result_time = (joborder_result_finish_time - joborder_result_start_time) ,
+                joborder_result_weight  = #{joborderResultWeight}
+                
+               where joborder_result_id = #{joborderResultId}
+           ]]>
+
+		<selectKey keyProperty="joborderResultId" resultType="int"
+			order="AFTER">
+         <![CDATA[
+           select last_insert_id()
+           ]]>
+		</selectKey>
+	</update>
+
+
+
+
+
+	<insert id="insertTest" parameterType="joborderresultvo">
+      <![CDATA[
+         
+         insert 
+            into joborder_result
+         values ( null , 3 , 1 , 1 , now() , null,  null , null );
+         
+        ]]>
+		<selectKey keyProperty="joborderResultId" resultType="int"
+			order="AFTER">
+         <![CDATA[
+           select last_insert_id()
+           ]]>
+		</selectKey>
+	</insert>
+
+	<update id="updateTest" parameterType="joborderresultvo">
+         <![CDATA[
+            
+            update  
+               joborder_result 
+            SET joborder_result_finish_time = now(),
+               joborder_result_stauts = 2 ,  
+               joborder_result_time = (joborder_result_finish_time - joborder_result_start_time) ,
+                joborder_result_weight  = 20
+                
+               where joborder_result_id = 8
+           ]]>
+
+		<selectKey keyProperty="joborderResultId" resultType="int"
+			order="AFTER">
+         <![CDATA[
+           select last_insert_id()
+           ]]>
+		</selectKey>
+	</update>
+
+</mapper>

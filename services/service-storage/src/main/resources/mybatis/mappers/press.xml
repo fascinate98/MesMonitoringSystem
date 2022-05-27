@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="press">
+
+	<select id="findAll" resultType="map"  parameterType="hashmap">
+		<![CDATA[
+			select 
+			log1.press_log_press_id  as log1_id, log1.press_log_status as log1_status, log1.press_log_punch as log1_punch,
+		]]>
+		<foreach collection="list" item="item" separator=" , "> 
+			log#{item}.press_log_press_id  as log#{item}_id, log#{item}.press_log_status as log#{item}_status, log#{item}.press_log_punch as log#{item}_punch
+		</foreach>
+		<![CDATA[
+			from press_log as log1
+			inner join 
+		]]>
+		<foreach collection="list" item="item" separator=" inner join ">  
+				press_log as log#{item}
+			on log1.press_log_time = log#{item}.press_log_time
+		</foreach>
+		<![CDATA[	
+			where 
+				log1.press_log_id = #{index}
+		        and
+				log1.press_log_press_id =1
+				and
+		]]>
+		<foreach collection="list" item="item" separator=" and "> 
+			log#{item}.press_log_press_id = #{item}
+		</foreach>
+		<![CDATA[	
+			limit 1;		   		                             
+		]]>
+	</select>
+
+
+</mapper>
